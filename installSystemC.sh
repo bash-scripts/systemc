@@ -1,7 +1,7 @@
 #!/bin/bash
 digit=64
 sudo -i
-wget https://http://www.accellera.com/images/downloads/standards/systemc/systemc-2.3.2.tar.gz
+wget http://www.accellera.com/images/downloads/standards/systemc/systemc-2.3.2.tar.gz
 tar -xvFj systemc-2.3.2.tar.gz
 cd ./systemc-2.3.2/src/sysc/datatypes/bit
 sed -i -e 's/mutable/ /g'
