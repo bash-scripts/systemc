@@ -1,21 +1,28 @@
 #!/bin/bash
 ###
-# "SystemC Runner" v.1.2.1
+# "SystemC Runner" v.1.3
 # USAGE: type the name of directory with SystemC code; take on input only one argument.
 ###
-name=$1
+user_input=$1
 if [[ $# < 1 ]]
   then echo -e "\e[0;41m! Directory not entered !\e[0m"
   exit
 fi
 if [[ $# = 1 ]]
   then echo -e -e "\e[0;37mAnalysing input...\e[0m"
-  if [[ ! -d "$name" ]]
+  if [[ ! -d "$user_input" ]]
     then echo -e "\e[0;41m! Incorrect directory  name !\e[0m"
     exit
     else
       echo -e "\e[0;37mEntering the directory...\e[0m"
-      cd $name
+      cd $user_input
+      short_dir_name=`pwd | grep -Eo "[^/][a-zA-Z0-9\s]*$"`
+      if [[ $user_input != $short_dir_name ]]
+        then echo -e "\e[0;37mShortening path to the directory...\e[0m"
+        dir_name=$short_dir_name
+        else
+          dir_name=$user_input
+      fi
   fi
 fi
 if [[ $# > 1 ]]
@@ -46,22 +53,22 @@ if [[ $total = 0 ]]
   exit
 fi
 echo -e "\n\e[0;37mTotal found \e[1;32m$total\e[0;37m file(s):\e[0m"
-names=''
+files=''
 for x in ${!cpps[*]}
   do
-  names=$names${cpps[$x]}' '
+  files=$files${cpps[$x]}' '
   echo -e "\e[0;34m ${cpps[$x]}\e[0m"
 done
 for x in ${!hs[*]}
   do
-  names=$names${hs[$x]}' '
+  files=$files${hs[$x]}' '
   echo -e "\e[0;31m ${hs[$x]}\e[0m"
 done
 echo -e "\n\e[1;34mContinue building? \e[0;34m[\e[1;32;40mY\e[0;34m/\e[1;31;40mN\e[0;34m]\e[0m"
 while true
   do
-    read ans
-    case $ans in
+    read user_answer
+    case $user_answer in
       y|Y)
         echo -e "\e[0;32mContinuation building...\e[0m"
         break;;
@@ -72,13 +79,13 @@ while true
         echo -e "\e[0;41m! Wrong answer (\"y\" or \"n\") !\e[0m"
     esac
 done
-g++ -Wall -Wextra -I. -I$SYSTEMC_HOME/include -L. -L$SYSTEMC_HOME/lib-linux64 -Wl,-rpath=$SYSTEMC_HOME/lib-linux64 -o out $names -lsystemc -lm
+g++ -Wall -Wextra -I. -I$SYSTEMC_HOME/include -L. -L$SYSTEMC_HOME/lib-linux64 -Wl,-rpath=$SYSTEMC_HOME/lib-linux64 -o out $files -lsystemc -lm
 if [[ ! -f "out" ]]
   then echo -e "\e[1;4;31m=====BUILDING FAIL=====\e[0m"
   exit
   else
   echo -e "\e[1;4;32m=====BUILDING SUCCESS=====\e[0m"
-  mv out ../scout\($name\)\#$(date +%d).$(date +%m).$(date +%y)_$(date +%H).$(date +%M).$(date +%S)
+  mv out ../scout\($dir_name\)\#$(date +%d).$(date +%m).$(date +%y)_$(date +%H).$(date +%M).$(date +%S)
   echo -e "\n\e[1;34m   SystemC output file is nearby!\e[0m"
   cd ..
   echo -e -n "\e[1;34m   ==> \e[0;32m"
