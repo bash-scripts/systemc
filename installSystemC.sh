@@ -35,4 +35,4 @@ echo "System will be rebooted after 10 seconds"
 sleep 5; echo "5"; sleep 1; echo "4"; sleep 1; echo "3"; sleep 1; echo "2"; sleep 1; echo "1"
 sleep 1
 echo "REBOOTING"
-sudo reboot
+sudo shutdown -r +0
